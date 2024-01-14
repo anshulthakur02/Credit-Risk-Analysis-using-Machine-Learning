@@ -6,14 +6,14 @@ Credit default risk is simply known as the possibility of a loss for a lender du
 ### Dataset
 The dataset we’re using can be found on Kaggle and it contains data for 32,581 borrowers and 11 variables related to each borrower. Let’s have a look at what those variables are:
 
-Age — numerical variable; age in years
-Income — numerical variable; annual income in dollars
-Home status — categorical variable; “rent”, “mortgage” or “own”
-Employment length — numerical variable; employment length in years
-Loan intent — categorical variable; “education”, “medical”, “venture”, “home improvement”, “personal” or “debt consolidation”
-Loan amount — numerical variable; loan amount in dollars
+* Age — numerical variable; age in years
+* Income — numerical variable; annual income in dollars
+* Home status — categorical variable; “rent”, “mortgage” or “own”
+* Employment length — numerical variable; employment length in years
+* Loan intent — categorical variable; “education”, “medical”, “venture”, “home improvement”, “personal” or “debt consolidation”
+* Loan amount — numerical variable; loan amount in dollars
 Loan grade — categorical variable; “A”, “B”, “C”, “D”, “E”, “F” or “G”
-Interest rate — numerical variable; interest rate in percentage
+* Interest rate — numerical variable; interest rate in percentage
 Loan to income ratio — numerical variable; between 0 and 1
 Historical default — binary, categorical variable; “Y” or “N”
 Loan status — binary, numerical variable; 0 (no default) or 1 (default) → this is going to be our target variable
