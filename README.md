@@ -33,7 +33,15 @@ With this in mind, I’ll now further explore how loan status is related to othe
 
 Two things quickly stand out upon looking at this box plot. We can clearly see that those who don’t default have a lower loan to income ratio mean value across all loan grades; which doesn’t come as a surprise. Also that no borrowers with loan grade G were able to repay their loan.
 
-Before  getting into model training, I need to make sure that all of our variables are numerical given that some of the models I am going to use cannot operate on label data. I will simply do this using the one-hot encoding method.
+Before  getting into model training, I need to make sure that all of our variables are numerical given that some of the models I am going to use cannot operate on label data. I will simply do this using the one-hot encoding method and then proceed to split the dataset into a train and test split.
+
+### Model training and evaluation
+
+In this section, I’ll be training and testing 3 models, namely KNN, logistic regression and XGBoost and then evaluate their performance at predicting loan defaults and their probability.
+
+First, let's build the models and look at some evaluation metrics for assessing the model’s ability to predict class labels, i.e., default or no default.
+
+
 
 
 
