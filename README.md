@@ -20,4 +20,6 @@ The dataset I'm using can be found on Kaggle and it contains data for 32,581 bor
 Now that we know what kind of variables we’re dealing with here, let’s get to the nitty-gritty of things.
 
 ### Data exploration and preprocessing
-First, I checked for missing values in the dataset.
+First, I will check for missing values in the dataset. The columns employment length and interest rate both have missing values. Given that the missing values represent a small percentage of the dataset, I will remove the rows that contain missing values.
+
+Next, I will look for outliers in our dataset so I can remedy them accordingly. I will do this using the describe() method which is used for calculating descriptive statistics. Not only will it help identify outliers, but it will also give me a better understanding of how our data is distributed. I’ll also be using a scatterplot matrix, a grid of scatterplots used to visualize bivariate relationships between combinations of variables, to visually detect outliers.
