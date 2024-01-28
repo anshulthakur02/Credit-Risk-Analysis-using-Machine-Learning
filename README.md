@@ -47,6 +47,23 @@ Firstly, Precision gives us the ratio of true positives to the total positives p
 
 We’ll now have a look at ROC which is a probability curve with False Positive Rate (FPR) on the x-axis and True Positive Rate (TPR, recall) on the y-axis. The best model should maximize the TPR to 1 and minimize FPR to 0. With this said, we can compare classifiers using the area under the curve of the ROC curve, AUC, where the higher its value, the better the model is at predicting 0s as 0s and 1s as 1s.
 
+We can once again see that XGBoost performs best as it has the highest AUC and so is the best classifier in distinguishing between default and no default classes.
+
+So far, we’ve looked at each model’s ability to predict class labels, we’ll now evaluate their performance at predicting the probability of the sample belonging to the positive class, i.e., probability of default. For this task, we’ll use a Reliability Plot and Brier Score, where the former creates a diagram of the actual probabilities versus the predicted probabilities on a test set and the latter calculates the mean squared error between predicted probabilities and their respective positive class values. Given that the Brier Score is a cost function, a lower Brier Score indicates a more accurate prediction.
+
+We can see from the above Brier Score that the XGBoost performs best once again, which doesn't come as a surprise by now, in comparison to other models. From this score and the plot, we conclude that our model is well-calibrated for probability prediction, meaning that predicted probabilities closely match the expected distribution of probabilities for each class, and so doesn't require further calibration.
+
+It’s needless to say which model was chosen as our best performer at predicting class labels and the probability of default. 
+
+### Feature Importance
+Last but not least, it’s time to identify which features were most influential in predicting our target variable. For this task, we’ll be using feature importance by information gain which measures each feature’s contribution for each tree in XGBoost.
+
+We can see from the figure above that rent as a home status, loan to income ratio and loan grade C are the top 3 most important features for predicting loan default and its probability.
+
+ ### Conclusion 
+To sum up, we’ve analyzed and pre-processed our data, trained and evaluated 3 models, namley KNN, logistic regression and XGBoost, for their ability to predict loan defaults and their probability. We used Precision, Recall, F1 and ROCAUC to evaluate the models’ performance at predicting class labels. We used these metrics in particular and discarded Accuracy given that we’re dealing with an imbalanced dataset. We also used a Reliability Plot and Brier Score to assess the calibration of our models. After having identified that XGBoost performed best on all metrics, we investigated which features were most important to our predictions using feature importance by information gain. With this said, we can round up our demonstration of how machine learning can be applied to the world of credit risk assessment.
+
+
 
 
 
