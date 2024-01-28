@@ -25,6 +25,9 @@ First, I will check for missing values in the dataset. The columns employment le
 
 Next, I will look for outliers in our dataset so I can remedy them accordingly. I will do this using the describe() method which is used for calculating descriptive statistics. Not only will it help identify outliers, but it will also give me a better understanding of how our data is distributed. I’ll also be using a scatterplot matrix, a grid of scatterplots used to visualize bivariate relationships between combinations of variables, to visually detect outliers. I will also look for outliers using a scatterplot matrix.
 
+![image](https://github.com/anshulthakur02/Credit-Risk-Analysis-using-Machine-Learning/blob/main/Plots/describe.png)  
+
+
 The variables 'Age', 'Employment Length' and 'income' have outliers that needs to be removed. So I am going to remove the outliers.
 
 Given the nature of the dataset, I’d expect that we’re dealing with an imbalanced classification problem, meaning that we have considerably more non-default cases than default cases. I confirmed that this is indeed the case with 78.4% of our dataset containing non-default cases.
