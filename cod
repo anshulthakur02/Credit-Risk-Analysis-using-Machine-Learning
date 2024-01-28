@@ -1,0 +1,150 @@
+#Checking for missing values
+data.isnull().sum()
+Age                       0 
+Income                    0 
+Home_Status               0 
+Employment_Length       895 
+Loan_Intent               0 
+loan_Grade                0 
+Loan_Amount               0 
+Interest_Rate          3116 
+Loan_Status               0 
+loan_percent_income       0 
+Historical_Default        0 
+dtype: int64
+
+#Dropping missing values
+data = data.dropna(axis=0)
+
+data.describe()
+
+#Scatterplot matrix
+fig = px.scatter_matrix(data, dimensions=
+["Age","Income","Employment_Length","Loan_Amount","Interest_Rate"],
+labels={col:col.replace('_', ' ') for col in data.columns},height=900, color="Loan_Status", color_continuous_scale=px.colors.diverging.Tealrose)
+fig.show()
+
+  #Removing outliers
+data = data[data["Age"]<=100]
+data = data[data["Employment_Length"]<=100]
+data = data[data["Income"]<= 4000000]
+
+#Percentage of non-default cases
+data_0 = data[data.Loan_Status == 0].Loan_Status.count() / data.Loan_Status.count()
+data_0
+
+#Box plot
+fig = px.box(data, x="loan_Grade", y="loan_percent_income", color="Loan_Status",
+color_discrete_sequence=px.colors.qualitative.Dark24,
+labels={col:col.replace('_', ' ') for col in data.columns},
+category_orders={"loan_Grade":["A","B","C","D","E","F","G"]})
+fig.update_layout(legend=dict(orientation="h", yanchor="bottom",
+y=1.02, xanchor="right", x=1))
+fig.show()
+
+#Parallel category diagram
+fig = px.parallel_categories(data, color_continuous_scale=px.colors.sequential.RdBu, color="Loan_Status",
+dimensions=['Home_Status', 'Loan_Intent', "loan_Grade", 'Historical_Default'], labels={col:col.replace('_', ' ') for col in data.columns})
+fig.show()
+
+Main takeaways from the above diagram:
+
+Our dataset is primarily composed of borrowers who have not defaulted on a loan before;
+Loan grades “A” and “B” are the most common grades while “F” and “G” are the least common;
+Home renters defaulted more often on their loans than those with a mortgage, whereas homeowners defaulted the least;
+Borrowers took out a loan for home improvement the least and for education the most. Also, defaults were more common for loans that were taken up for covering medical expenses and debt consolidation.
+Before we get into our model training, we need to make sure that all of our variables are numerical given that some of the models we’re going to use cannot operate on label data. We can simply do this using the one-hot encoding method.
+
+
+#One hot encoding of categorical variables
+df = pd.get_dummies(data=data,columns=['Home_Status','Loan_Intent','loan_Grade','Historical_Default'])
+Now it’s time to split our dataset into a train and test split and we’ll be all ready to start building some models.
+
+#Train and test split
+Y = df['Loan_Status']
+X = df.drop('Loan_Status',axis=1)
+x_train, x_test, y_train, y_test = model_selection.train_test_split(X, Y, random_state=0, test_size=.20)
+
+  #One hot encoding of categorical variables
+df = pd.get_dummies(data=data,columns=['Home_Status','Loan_Intent','loan_Grade','Historical_Default'])
+Now it’s time to split our dataset into a train and test split and we’ll be all ready to start building some models.
+
+#Train and test split
+Y = df['Loan_Status']
+X = df.drop('Loan_Status',axis=1)
+x_train, x_test, y_train, y_test = model_selection.train_test_split(X, Y, random_state=0, test_size=.20)
+
+#Model training and evaluation
+  def model_assess(model, name='Default'):
+model.fit(x_train, y_train)
+preds = model.predict(x_test)
+preds_proba = model.predict_proba(x_test)
+print('                   ', name, '\n',
+classification_report(y_test, model.predict(x_test)))
+#KNN
+knn = KNeighborsClassifier(n_neighbors=151)
+model_assess(knn, name='KNN')
+#Logistic Regression
+lg = LogisticRegression(random_state=0)
+model_assess(lg, 'Logistic Regression')
+#XGB
+xgb = XGBClassifier(n_estimators=1000, learning_rate=0.05)model_assess(xgb, 'XGBoost')
+
+#ROC AUC
+fig = plt.figure(figsize=(14,10))
+plt.plot([0, 1], [0, 1],'r--')
+#KNN
+preds_proba_knn = knn.predict_proba(x_test)
+probsknn = preds_proba_knn[:, 1]
+fpr, tpr, thresh = metrics.roc_curve(y_test, probsknn)
+aucknn = roc_auc_score(y_test, probsknn)
+plt.plot(fpr, tpr, label=f'KNN, AUC = {str(round(aucknn,3))}')
+#Logistic Regression
+preds_proba_lg = lg.predict_proba(x_test)
+probslg = preds_proba_lg[:, 1]
+fpr, tpr, thresh = metrics.roc_curve(y_test, probslg)
+auclg = roc_auc_score(y_test, probslg)
+plt.plot(fpr, tpr, label=f'Logistic Regression, AUC = {str(round(auclg,3))}')
+#XGBoost
+preds_proba_xgb = xgb.predict_proba(x_test)
+probsxgb = preds_proba_xgb[:, 1]
+fpr, tpr, thresh = metrics.roc_curve(y_test, probsxgb)
+aucxgb = roc_auc_score(y_test, probsxgb)
+plt.plot(fpr, tpr, label=f'XGBoost, AUC = {str(round(aucxgb,3))}')
+plt.ylabel("True Positive Rate")
+plt.xlabel("False Positive Rate")
+plt.title("ROC curve")
+plt.rcParams['axes.titlesize'] = 18
+plt.legend()
+plt.show()
+
+#Reliability plot and Brier Score
+fig = plt.figure(figsize=(14,10))
+plt.plot([0, 1], [0, 1], color="black")
+#KNN
+knn_y, knn_x = calibration_curve(y_test, preds_proba_knn[:,1], n_bins=10, normalize=True)
+loss_knn = brier_score_loss(y_test, preds_proba_knn[:,1])
+plt.plot(knn_x, knn_y, marker='o', label=f'KNN, Brier score = {str(round(loss_knn,3))}')
+#Logistic Regression
+lg_y, lg_x = calibration_curve(y_test, preds_proba_lg[:,1], n_bins=10, normalize=True)
+loss_lg = brier_score_loss(y_test, preds_proba_lg[:,1])
+plt.plot(lg_x, lg_y, marker='o',label=f'Logistic Regression, Brier score = {str(round(loss_lg,3))}')
+#XGBoost
+preds_proba_xgb = xgb.predict_proba(x_test)
+xgb_y, xgb_x = calibration_curve(y_test, preds_proba_xgb[:,1], n_bins=10, normalize=True)
+loss_xgb = brier_score_loss(y_test, preds_proba_xgb[:,1])
+plt.plot(xgb_x, xgb_y, marker='o', label=f'XGBoost, Brier score = {str(round(loss_xgb,3))}')
+plt.ylabel("Actual probabilty")
+plt.xlabel("Predicted probability")
+plt.title("Reliability plot")
+plt.rcParams['axes.titlesize'] = 18
+plt.legend()
+plt.show()
+
+#Feature importance plot
+fig, (ax1, ax2) = plt.subplots(figsize = (15, 17), ncols=1, nrows=2)
+plt.subplots_adjust(left=0.125, right=0.9, bottom=0.1, top = 0.9, wspace=0, hspace = 0.5)
+plot_importance(xgb, importance_type='gain', ax = ax1)
+ax1.set_title('Feature Importance by Information Gain', fontsize = 18)
+ax1.set_xlabel('Gain')
+
