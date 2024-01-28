@@ -34,6 +34,8 @@ Given the nature of the dataset, I’d expect that we’re dealing with an imbal
 
 With this in mind, I’ll now further explore how loan status is related to other variables in the dataset.
 
+![image](https://github.com/anshulthakur02/Credit-Risk-Analysis-using-Machine-Learning/blob/main/Plots/boxplot.png)
+
 Two things quickly stand out upon looking at this box plot. We can clearly see that those who don’t default have a lower loan to income ratio mean value across all loan grades; which doesn’t come as a surprise. Also that no borrowers with loan grade G were able to repay their loan.
 
 Before  getting into model training, I need to make sure that all of our variables are numerical given that some of the models I am going to use cannot operate on label data. I will simply do this using the one-hot encoding method and then proceed to split the dataset into a train and test split.
